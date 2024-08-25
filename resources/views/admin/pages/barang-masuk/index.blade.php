@@ -66,7 +66,9 @@
                                     <th>Satuan</th>
                                     <th>Jumlah</th>
                                     <th>Keterangan</th>
-                                    <th>Aksi</th>
+                                    @if (isAdmin())
+                                        <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,17 +81,19 @@
                                         <td>{{ $item->barang->satuan->nama }}</td>
                                         <td>{{ $item->jumlah }}</td>
                                         <td>{{ $item->keterangan }}</td>
-                                        <td>
-                                            <a href="{{ route('admin.barang-masuk.edit', $item->id) }}"
-                                                class="btn btn-sm py-2 btn-info">Edit</a>
-                                            <form action="javascript:void(0)" method="post" class="d-inline"
-                                                id="formDelete">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btnDelete btn-sm py-2 btn-danger"
-                                                    data-action="{{ route('admin.barang-masuk.destroy', $item->id) }}">Hapus</button>
-                                            </form>
-                                        </td>
+                                        @if (isAdmin())
+                                            <td>
+                                                <a href="{{ route('admin.barang-masuk.edit', $item->id) }}"
+                                                    class="btn btn-sm py-2 btn-info">Edit</a>
+                                                <form action="javascript:void(0)" method="post" class="d-inline"
+                                                    id="formDelete">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button class="btn btnDelete btn-sm py-2 btn-danger"
+                                                        data-action="{{ route('admin.barang-masuk.destroy', $item->id) }}">Hapus</button>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

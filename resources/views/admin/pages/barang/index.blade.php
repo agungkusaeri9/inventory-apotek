@@ -41,7 +41,13 @@
                                         <td>{{ $item->jenis->nama }}</td>
                                         <td>{{ $item->satuan->nama }}</td>
                                         <td>{{ formatRupiah($item->harga) }}</td>
-                                        <td>{{ $item->stok }}</td>
+                                        <td>
+                                            @if ($item->stok < $item->stok_minimal)
+                                                <span class="badge badge-danger">{{ $item->stok }}</span>
+                                            @else
+                                                <span class="">{{ $item->stok }}</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $item->stok_minimal }}</td>
                                         @if (isAdmin())
                                             <td>

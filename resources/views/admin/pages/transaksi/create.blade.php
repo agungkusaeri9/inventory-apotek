@@ -202,7 +202,6 @@
             $('.btnTambah').on('click', function() {
                 let id = $("#barang_id").val();
                 let jumlah = $('#jumlah').val();
-                console.log(id);
                 $.ajax({
                     url: "{{ route('admin.barang.getByIdJson') }}",
                     type: 'GET',
@@ -212,6 +211,17 @@
                     dataType: 'JSON',
                     success: function(res) {
                         let data = res.data;
+                        if (jumlah > data.stok) {
+                            Swal.fire({
+                                title: "Gagal!",
+                                text: `Stok Barang adalah ${data.stok}. Stok tidak mencukupi`,
+                                icon: "error",
+                                button: "OK",
+                            }).then((willReload) => {
+                                return false;
+                            });
+                            return 0;
+                        }
                         let dataArray = [];
                         dataArray.push({
                             barang_id: data.id,

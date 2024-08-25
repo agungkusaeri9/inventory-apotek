@@ -14,6 +14,10 @@ use Illuminate\Validation\Validator;
 
 class BarangMasukController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('isAdmin')->only(['edit', 'destroy']);
+    }
     public function index()
     {
         $barang_id = request('barang_id');

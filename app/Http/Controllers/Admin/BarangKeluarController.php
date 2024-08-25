@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\BarangKeluar;
+use App\Services\WhatsappService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 
 class BarangKeluarController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('isAdmin')->only(['edit', 'destroy']);
+    }
     public function index()
     {
         $barang_id = request('barang_id');
@@ -60,7 +66,7 @@ class BarangKeluarController extends Controller
             $data['tanggal'] = Carbon::now()->format('Y-m-d');
             $barang_keluar = BarangKeluar::create($data);
             $barang->decrement('stok', request('jumlah'));
-
+            $this->cekMinimalStok();
             DB::commit();
             return redirect()->route('admin.barang-keluar.index')->with('success', 'Barang Keluar berhasil ditambahkan.');
         } catch (\Throwable $th) {
@@ -151,5 +157,17 @@ class BarangKeluarController extends Controller
             'data' => $data
         ]);
         return $pdf->download('laporan-barang-keluar.pdf');
+    }
+
+    public function cekMinimalStok()
+    {
+        $barangs = Barang::latest()->get();
+        $wa = new WhatsappService();
+        foreach ($barangs as $barang) {
+            if ($barang->stok_minimal >= $barang->stok) {
+                // kirim notifikasi
+                $wa->stokMenipis($barang->id);
+            }
+        }
     }
 }
