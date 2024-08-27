@@ -9,6 +9,7 @@ use App\Models\Satuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class BarangController extends Controller
 {
@@ -43,7 +44,7 @@ class BarangController extends Controller
     {
         request()->validate([
             'gambar' => ['image', 'mimes:png,jpg,jpeg', 'max:2028'],
-            'nama' => ['required'],
+            'nama' => ['required', 'unique:barang,nama'],
             'jenis_id' => ['required', 'numeric'],
             'satuan_id' => ['required', 'numeric'],
             'stok_awal' => ['required', 'numeric'],
@@ -88,7 +89,7 @@ class BarangController extends Controller
     {
         request()->validate([
             'gambar' => ['image', 'mimes:png,jpg,jpeg', 'max:2028'],
-            'nama' => ['required'],
+            'nama' => ['required', Rule::unique('barang', 'nama')->ignore($id)],
             'jenis_id' => ['required', 'numeric'],
             'satuan_id' => ['required', 'numeric'],
             'stok_minimal' => ['required', 'numeric'],
